@@ -1,0 +1,52 @@
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+  padding-top: 72px;
+  -webkit-font-smoothing: antialiased;
+  font-size: 1.125em;
+  background-color: #000;
+  color: #fff;
+  line-height: 1.5em;
+}
+
+h1, h2, h3 {
+  color: #fff;
+}
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 1.5em;
+}
+
+h2 {
+  font-size: 2em;
+  margin-bottom: 1em;
+}
+
+h3 {
+  font-size: 1.5em
+}
+
+a {
+  text-decoration: none;
+  color: #09f;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+div.gooeys > div {
+  margin: 1em 0;
+  border-radius: 5px;
+  padding: 8px 20px;
+}
+
+
+div.counter-section { background-color: #C1301C; }
+div.temperature-converter-section { background-color: #C96112; }
+div.flight-booker-section { background-color: #C4A705; }
+div.timer-section { background-color: #177245; }
+div.crud-section { background-color: #189dcd; }
+div.circle-drawer-section { background-color: #5d6fd3; }
+div.cells-section { background-color: #9400D3; }
