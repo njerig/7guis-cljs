@@ -6,31 +6,40 @@
 ;; -------------------------
 ;; Views
 
-(defn counter-section []
-  [:div.counter-section
-    [:h2 "Counter"]])
+;; 1. Counter
+(defn counter-component []
+  (let [counter (r/atom 0)]
+    (fn []
+      [:div.counter-section
+        [:h2 "Counter"]
+        [:input {:type "text" :read-only true :value @counter}]
+        [:input {:style {:margin-left "10px"}
+                 :type "button"
+                 :value "+ 1"
+                 :on-click #(swap! counter inc)}]])))
 
-(defn temperature-converter-section []
+;; 2. Temperature converter
+(defn temperature-converter-component []
   [:div.temperature-converter-section
     [:h2 "Temperature converter"]])
 
-(defn flight-booker-section []
+(defn flight-booker-component []
   [:div.flight-booker-section
     [:h2 "Flight booker"]])
 
-(defn timer-section []
+(defn timer-component []
   [:div.timer-section
     [:h2 "Timer"]])
 
-(defn crud-section []
+(defn crud-component []
   [:div.crud-section
     [:h2 "CRUD"]])
 
-(defn circle-drawer-section []
+(defn circle-drawer-component []
   [:div.circle-drawer-section
     [:h2 "Circle drawer"]])
 
-(defn cells-section []
+(defn cells-component []
   [:div.cells-section
     [:h2 "Cells"]])
 
@@ -39,13 +48,13 @@
   [:div
     [:h1 "7GUIs"]
     [:div.gooeys
-      [counter-section]
-      [temperature-converter-section]
-      [flight-booker-section]
-      [timer-section]
-      [crud-section]
-      [circle-drawer-section]
-      [cells-section]]])
+      [counter-component]
+      [temperature-converter-component]
+      [flight-booker-component]
+      [timer-component]
+      [crud-component]
+      [circle-drawer-component]
+      [cells-component]]])
 
 ;; -------------------------
 ;; Initialize app
