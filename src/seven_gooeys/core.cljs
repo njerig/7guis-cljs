@@ -1,7 +1,8 @@
 (ns seven-gooeys.core
     (:require
       [reagent.core :as r]
-      [reagent.dom :as d]))
+      [reagent.dom :as d]
+      [clojure.string :as string]))
 
 ;; -------------------------
 ;; Views
@@ -46,19 +47,60 @@
                                        (assoc invalidates ""))))))}])
 
 (defn temperature-converter-component []
-  (fn []
-    [:div.temperature-converter-section
-      [:h2 "Temperature converter"]
-      [temperature-input :celsius :fahrenheit]
-      [:label "° C"]
-      " = "
-      [temperature-input :fahrenheit :celsius]
-      [:label "° F"]]))
+  [:div.temperature-converter-section
+    [:h2 "Temperature converter"]
+    [temperature-input :celsius :fahrenheit]
+    [:label "° C"]
+    " = "
+    [temperature-input :fahrenheit :celsius]
+    [:label "° F"]])
 
 ;; 3. Flight booker
+(def flight-state (r/atom {:type "one-way"
+                           :depart "30.01.2021"
+                           :return "30.01.2021"}))
+
+(defn to-date-obj [date-string]
+  (let [[day month year] (string/split date-string #"\.")]
+    (js/Date. (string/join "-" [year month day]))))
+
+(defn is-not-a-date [some-string]
+  (js/isNaN (to-date-obj some-string)))
+
+(defn date-input [date-type]
+  [:input {:type :text
+           :value (date-type @flight-state)
+           :on-change #(swap! flight-state assoc date-type (.. % -target -value))
+           :style {:background-color (when (is-not-a-date (date-type @flight-state)) 
+                                       "red")}
+           :disabled (when (and (= date-type :return) 
+                                (= (:type @flight-state) "one-way")) 
+                       true)}])
+
 (defn flight-booker-component []
   [:div.flight-booker-section
-    [:h2 "Flight booker"]])
+    [:h2 "Flight booker"]
+    [:form {:on-submit (fn [e]
+                         (.preventDefault e)
+                         (js/alert (str "You have booked a "
+                                        (:type @flight-state)
+                                         " flight departing on "
+                                        (:depart @flight-state)
+                                        (when (= (:type @flight-state) "return")
+                                        (str " and returning on " (:return @flight-state)))
+                                        ".")))}
+      [:select {:value (:type @flight-state)
+                :on-change (fn [e]
+                             (swap! flight-state assoc :type (.. e -target -value)))}
+        [:option {:value "one-way"} "one-way flight"]
+        [:option {:value "return"} "return flight"]]
+      [date-input :depart]
+      [date-input :return]
+      [:input {:type :submit
+               :disabled (when (or (and (= (:type @flight-state) "return")
+                                        (< (to-date-obj (:return @flight-state)) (to-date-obj (:depart @flight-state))))
+                                   (or (is-not-a-date (:depart @flight-state)) (is-not-a-date (:return @flight-state))))
+                           true)}]]])
 
 (defn timer-component []
   [:div.timer-section

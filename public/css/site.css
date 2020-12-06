@@ -53,3 +53,7 @@ div.timer-section { background-color: #177245; }
 div.crud-section { background-color: #189dcd; }
 div.circle-drawer-section { background-color: #5d6fd3; }
 div.cells-section { background-color: #9400D3; }
+
+.flight-booker-section form select, .flight-booker-section form input {
+  display: block;
+}
