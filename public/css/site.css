@@ -57,3 +57,9 @@ div.cells-section { background-color: #9400D3; }
 .flight-booker-section form select, .flight-booker-section form input {
   display: block;
 }
+
+div.timer-section div { width: 80%; }
+div.timer-section div div { display: flex; }
+div.timer-section div div div { width: 115px; }
+div.timer-section div div meter,
+div.timer-section div div input { flex-grow: 1; }

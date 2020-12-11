@@ -2,7 +2,9 @@
     (:require
       [reagent.core :as r]
       [reagent.dom :as d]
-      [clojure.string :as string]))
+      [clojure.string :as string]
+      [goog.string :as gstring]
+      [goog.string.format]))
 
 ;; -------------------------
 ;; Views
@@ -101,19 +103,45 @@
                                        (or (not-a-date? (:depart @flight-state)) (not-a-date? (:return @flight-state))))
                                true)}]]])))
 
+;; 4. Timer
 (defn timer-component []
-  [:div.timer-section
-    [:h2 "Timer"]
-    [:div
-      [:div
-        [:span {:style {:min-width "2rem" :margin-right "5px"}} "Elapsed Time:"]
-        [:meter {:style {:flex-grow 1}}]]
-      [:div
-       [:label "10s"]]
-      [:div {:style {:display "flex"}}
-       [:div {:style {:min-width "2rem"}} "Duration:"]
-       [:div [:input {:type :range
-                      :style {:flex-grow 1}}]]]]])
+  (let [timer    (r/atom {:elapsed 0 :duration 30})
+        elapsed  (r/cursor timer [:elapsed])
+        duration (r/cursor timer [:duration])]
+    (r/create-class 
+      {:component-did-mount
+        #(def tid (js/setInterval
+                    (fn []
+                      (when (< @elapsed @duration)
+                        (swap! elapsed inc)))
+                    1000))
+       :component-will-unmount
+        (js/clearInterval tid)
+       :reagent-render 
+        (fn []
+          [:div.timer-section
+            [:h2 "Timer"]
+            [:div
+              [:div
+                [:div [:span "Elapsed time:"]]
+                [:meter {:min 0
+                         :max @duration
+                         :value @elapsed}]]
+              [:div
+                [:div]
+                [:label (str @elapsed "s")]]
+              [:div
+                [:div [:span "Duration:"]]
+                [:input {:type :range
+                         :min 0
+                         :max 60
+                         :step 1
+                         :value @duration
+                         :on-input #(reset! duration 
+                                            (.. % -target -value))}]]
+              [:div {:style {:margin-top 20}}
+                [:input {:type :reset
+                         :on-click #(reset! elapsed 0)}]]]])})))
 
 (defn crud-component []
   [:div.crud-section
