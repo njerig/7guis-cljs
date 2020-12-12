@@ -63,3 +63,10 @@ div.timer-section div div { display: flex; }
 div.timer-section div div div { width: 115px; }
 div.timer-section div div meter,
 div.timer-section div div input { flex-grow: 1; }
+
+div.crud-section > div { 
+  display: flex;
+  margin-top: 1em;
+}
+div.crud-section label { margin-right: 10px; }
+div.crud-section select { width: 100%; }
