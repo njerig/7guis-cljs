@@ -34,7 +34,7 @@
                          :min 0
                          :max 60
                          :step 1
-                         :value @duration
+                         :defaultValue @duration
                          :on-input #(reset! duration 
                                             (.. % -target -value))}]]
               [:div {:style {:margin-top 20}}
