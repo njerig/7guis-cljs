@@ -28,13 +28,13 @@
         [:div
           [:div {:style {:flex-grow 1
                          :margin-right "20px"}}
-            [:select {:size 6
-                      :id "listbox"
-                      :value @selected
-                      :on-change #(reset! selected (.. % -target -value))}
+            (into [:select {:size 6
+                            :id "listbox"
+                            :value @selected
+                            :on-change #(reset! selected (.. % -target -value))}]
               (map
                 (fn [name] [:option {:key name} name])
-                (filter #(true? (string/starts-with? % (string/capitalize @filter-prefix))) @names))]]
+                (filter #(true? (string/starts-with? % (string/capitalize @filter-prefix))) @names)))]
           [:div
             [:div
               [:div {:style {:width 88
