@@ -7,16 +7,13 @@
       [seven-gooeys.temp-converter :as temp-converter]
       [seven-gooeys.flight-booker :as flight-booker]
       [seven-gooeys.timer :as timer]
-      [seven-gooeys.crud :as crud]))
+      [seven-gooeys.crud :as crud]
+      [seven-gooeys.circle-drawer :as circle-drawer]))
 
-(defn circle-drawer-component []
-  [:div.circle-drawer-section
-    [:h2 "Circle drawer"]])
 
 (defn cells-component []
   [:div.cells-section
     [:h2 "Cells"]])
-
 
 (defn home-page []
   [:div
@@ -27,7 +24,7 @@
       [flight-booker/component]
       [timer/component]
       [crud/component]
-      [circle-drawer-component]
+      [circle-drawer/component]
       [cells-component]]])
 
 ;; -------------------------
