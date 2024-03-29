@@ -25,21 +25,50 @@
                       (update :index inc)))))
 
 (defn draw-circle [state [x y]]
-  (swap! state assoc (:id @state) {:position [x y]
-                                   :diameter default-diameter}))
+  (swap! state assoc-in [:circles (generate-id state)] {:position [x y]
+                                                        :diameter default-diameter}))
 
 (defn add-draw-to-actions [state [x y]]
-  (add-action state [:draw-circle (generate-id state) {:position [x y]
-                                                       :diameter default-diameter}]))
+  (add-action state [:draw-circle (:id @state) {:position [x y]
+                                                :diameter default-diameter}]))
 
 (defn edit-circle [state id d]
   (swap! state assoc-in [:circles id :diameter] d))
 
 (defn add-edit-to-actions [state id d]
-  (add-action state [:edit-circle id d]))
+  (add-action state [:edit-circle id {:diameter d}]))
 
 (defn deselect-circle [state]
   (swap! state #(assoc-in % [:selected-id] nil)))
+
+(defn find-previous-diameter [state id]
+  (let [current-actions (take (:index @state) (:actions @state))
+        relevant-actions (filter #(= id (second %)) current-actions)
+        relevant-action (last relevant-actions)
+        params (last relevant-action)]
+    (:diameter params)))
+
+(defn reverse-action [state]
+  (let [last-action (nth (:actions @state) (:index @state))
+        [action-type id _] last-action]
+    (case action-type
+      :draw-circle (swap! state update :circles dissoc id)
+      :edit-circle (swap! state assoc-in [:circles id :diameter] (find-previous-diameter state id)))))
+
+(defn undo [state]
+  (when (and (>= (:index @state) 0)
+             (<= (:index @state) (-> @state :actions count dec)))
+    (reverse-action state)
+    (swap! state update :index dec)))
+
+(defn redo [state]
+  (when (and (>= (:index @state) 0) 
+             (<= (:index @state) (- (-> @state :actions count) 2)))
+    (swap! state update :index inc)
+    (let [[action-type id {:keys [diameter position]}] (nth (:actions @state) (:index @state))]
+      (case action-type
+        :draw-circle (draw-circle state position)
+        :edit-circle (edit-circle state id diameter)))))
 
 (defn select-current-actions [state]
   (-> @state :actions (subvec 0 (inc (:index @state)))))
@@ -71,12 +100,10 @@
      (calc-popup-y cy popup-height canvas-height)]))
 
 (defn adjust-dialog [circle id canvas show-state state]
-  (let [cx (get-in circle [:position 0])
-        cy (get-in circle [:position 1])
+  (let [cx (get-in @circle [:position 0])
+        cy (get-in @circle [:position 1])
         dimensions [148 66]
-        dialog-pos (calc-popup-pos [cx cy] dimensions canvas)
-        temp-diameter (r/atom (circle :diameter))
-        last-slider-value (r/atom (circle :diameter))]
+        dialog-pos (calc-popup-pos [cx cy] dimensions canvas)]
     (fn []
       [:foreignObject {:x (dialog-pos 0)
                        :y (dialog-pos 1)
@@ -101,18 +128,18 @@
                        :type :range
                        :min 1
                        :max 100
-                       :value @temp-diameter
+                       :value (:diameter @circle)
                        :on-click #(.stopPropagation %)
                        :on-change (fn [e]
-                                    (let [new-value (-> e .-target .-value)]
-                                      (reset! temp-diameter new-value)
+                                    (let [new-value (-> e .-target .-value int)]
+                                      (swap! circle assoc :diameter new-value)
                                       (edit-circle state id new-value)))
                        :on-mouse-up (fn [_]
-                                      (add-edit-to-actions state id @temp-diameter))}]]]]])))
+                                      (add-edit-to-actions state id (:diameter @circle)))}]]]]])))
 
 (defn context-menu [circle canvas show-state]
-  (let [cx (get-in circle [:position 0])
-        cy (get-in circle [:position 1])
+  (let [cx (get-in @circle [:position 0])
+        cy (get-in @circle [:position 1])
         dimensions [105 30]
         menu-pos (calc-popup-pos [cx cy] dimensions canvas)]
     (fn []
@@ -134,18 +161,20 @@
                                                 (assoc :show-adjust true))))} 
              "Adjust diameter..."]]]])))
 
-(defn selected-popup [state id circle canvas]
+(defn selected-popup [state canvas]
   (let [show-state (r/atom {:show-menu   true
-                            :show-adjust false})]
+                            :show-adjust false})
+        id (:selected-id @state)
+        circle (r/cursor state [:circles id])]
     (fn []
       [:<>
         [context-menu circle canvas show-state]
         [adjust-dialog circle id canvas show-state state]])))
 
-(defn circle-component [state id circle]
-  [:circle {:cx (get-in circle [:position 0])
-            :cy (get-in circle [:position 1])
-            :r  (/ (:diameter circle) 2)
+(defn circle-component [state id params]
+  [:circle {:cx (get-in params [:position 0])
+            :cy (get-in params [:position 1])
+            :r  (/ (:diameter params) 2)
             :fill "white"
             :stroke "black"
             :stroke-width 1
@@ -170,12 +199,10 @@
                          :justify-content "center"
                          :margin-bottom "1em"}}
             [:button {:value "undo"
-                      :on-click #(when (>= @index 0) 
-                                   (swap! index dec))
+                      :on-click #(undo state)
                       :disabled (when (< @index 0) true)} "Undo"]
             [:button {:value "redo"
-                      :on-click #(when (<= @index (-> @state :actions count dec))
-                                   (swap! index inc))
+                      :on-click #(redo state)
                       :disabled (when (= @index (-> @state :actions count dec)) true)} "Redo"]]
             [:svg#canvas {:xmlns "http://www.w3.org/2000/svg"
                           :width "100%"
@@ -191,15 +218,16 @@
                                                               (.-clientY e)]
                                                              (.-target e))]
                                                 (draw-circle state mouse-pos)
-                                                (add-draw-to-actions state mouse-pos)))}
+                                                (add-draw-to-actions state mouse-pos)
+                                                (js/console.log "index: " @index)))}
               (map
                 (fn [[circle-id circle-param]]
                   ^{:key (str "circle_" circle-id)} [circle-component state
                                                                       circle-id
                                                                       circle-param])
-                (-> state select-current-actions construct-circles-map))
-              (let [selected (:selected-id @state)
-                    circles (-> state select-current-actions construct-circles-map)]
-                (when (some? selected)
-                  (let [circle (get circles selected)]
-                    [selected-popup state selected circle canvas])))]]])))
+                (@state :circles))
+              (let [selected-id (:selected-id @state)
+                    circles (@state :circles)]
+                (when (some? selected-id)
+                  (let [circle (get circles selected-id)]
+                    [selected-popup state canvas])))]]])))
