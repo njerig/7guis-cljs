@@ -70,17 +70,6 @@
         :draw-circle (draw-circle state position)
         :edit-circle (edit-circle state id diameter)))))
 
-(defn select-current-actions [state]
-  (-> @state :actions (subvec 0 (inc (:index @state)))))
-
-(defn construct-circles-map [actions]
-  (reduce (fn [circles [action id param]]
-              (case action
-                :draw-circle (assoc circles id param)
-                :edit-circle (update circles id assoc :diameter param)))
-            {}
-            actions))
-
 (defn calc-pos [coord popup-dim canvas-dim]
   (let [max-coord (- canvas-dim popup-dim)]
     (if (> coord max-coord)
