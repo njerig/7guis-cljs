@@ -2,13 +2,13 @@
 This is an exercise in programming seven different GUIs, as described [here](https://eugenkiss.github.io/7guis/tasks).
 
 ## Progress
-[x] 1: Counter
-[x] 2: Temperature Converter
-[x] 3: Flight Booker
-[x] 4: Timer
-[x] 5: CRUD
-[x] 6: Circle Drawer
-[ ] 7: Cells
+- [x] 1: Counter
+- [x] 2: Temperature Converter
+- [x] 3: Flight Booker
+- [x] 4: Timer
+- [x] 5: CRUD
+- [x] 6: Circle Drawer
+- [ ] 7: Cells
 
 
 ## Development
