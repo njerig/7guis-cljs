@@ -32,11 +32,11 @@
   (add-action state [:draw-circle (:id @state) {:position [x y]
                                                 :diameter default-diameter}]))
 
-(defn edit-circle [state id d]
-  (swap! state assoc-in [:circles id :diameter] d))
+(defn edit-circle [state id new-diameter]
+  (swap! state assoc-in [:circles id :diameter] new-diameter))
 
-(defn add-edit-to-actions [state id d]
-  (add-action state [:edit-circle id {:diameter d}]))
+(defn add-edit-to-actions [state id new-diameter]
+  (add-action state [:edit-circle id {:diameter new-diameter}]))
 
 (defn deselect-circle [state]
   (swap! state #(assoc-in % [:selected-id] nil)))
@@ -81,26 +81,21 @@
             {}
             actions))
 
-(defn calc-popup-x [cx popup-width canvas-width]
-  (let [max-x (- canvas-width popup-width)]
-    (if (> cx max-x)
-      (- cx popup-width)
-      cx)))
-
-(defn calc-popup-y [cy popup-height canvas-height]
-  (let [max-y (- canvas-height popup-height)]
-    (if (> cy max-y)
-      (- cy popup-height)
-      cy)))
+(defn calc-pos [coord popup-dim canvas-dim]
+  (let [max-coord (- canvas-dim popup-dim)]
+    (if (> coord max-coord)
+      (- coord popup-dim)
+      coord)))
 
 (defn calc-popup-pos [[cx cy] [popup-width popup-height] canvas]
   (let [canvas-width (.-clientWidth @canvas)
         canvas-height (.-clientHeight @canvas)]
-    [(calc-popup-x cx popup-width canvas-width)
-     (calc-popup-y cy popup-height canvas-height)]))
+    [(calc-pos cx popup-width canvas-width)
+     (calc-pos cy popup-height canvas-height)]))
 
-(defn adjust-dialog [circle id canvas show-state state]
-  (let [cx (get-in @circle [:position 0])
+(defn adjust-dialog [circle canvas show-state state]
+  (let [id (:selected-id @state)
+        cx (get-in @circle [:position 0])
         cy (get-in @circle [:position 1])
         dimensions [148 66]
         dialog-pos (calc-popup-pos [cx cy] dimensions canvas)]
@@ -132,7 +127,6 @@
                        :on-click #(.stopPropagation %)
                        :on-change (fn [e]
                                     (let [new-value (-> e .-target .-value int)]
-                                      (swap! circle assoc :diameter new-value)
                                       (edit-circle state id new-value)))
                        :on-mouse-up (fn [_]
                                       (add-edit-to-actions state id (:diameter @circle)))}]]]]])))
@@ -169,7 +163,7 @@
     (fn []
       [:<>
         [context-menu circle canvas show-state]
-        [adjust-dialog circle id canvas show-state state]])))
+        [adjust-dialog circle canvas show-state state]])))
 
 (defn circle-component [state id params]
   [:circle {:cx (get-in params [:position 0])
@@ -226,8 +220,5 @@
                                                                       circle-id
                                                                       circle-param])
                 (@state :circles))
-              (let [selected-id (:selected-id @state)
-                    circles (@state :circles)]
-                (when (some? selected-id)
-                  (let [circle (get circles selected-id)]
-                    [selected-popup state canvas])))]]])))
+                (when (some? (:selected-id @state))
+                  [selected-popup state canvas])]]])))
