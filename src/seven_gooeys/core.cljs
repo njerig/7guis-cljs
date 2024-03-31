@@ -6,8 +6,7 @@
       [seven-gooeys.flight-booker :as flight-booker]
       [seven-gooeys.timer :as timer]
       [seven-gooeys.crud :as crud]
-      [seven-gooeys.circle-drawer :as circle-drawer]
-      [seven-gooeys.cells :as cells]))
+      [seven-gooeys.circle-drawer :as circle-drawer]))
 
 
 (defn home-page []
