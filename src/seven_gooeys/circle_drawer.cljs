@@ -201,8 +201,7 @@
                                                               (.-clientY e)]
                                                              (.-target e))]
                                                 (draw-circle state mouse-pos)
-                                                (add-draw-to-actions state mouse-pos)
-                                                (js/console.log "index: " @index)))}
+                                                (add-draw-to-actions state mouse-pos)))}
               (map
                 (fn [[circle-id circle-param]]
                   ^{:key (str "circle_" circle-id)} [circle-component state
