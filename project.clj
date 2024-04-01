@@ -22,25 +22,25 @@
   :figwheel {:http-server-root "."
              :nrepl-port 7002
              :nrepl-middleware [cider.piggieback/wrap-cljs-repl]
-             :css-dirs ["public/css"]}
+             :css-dirs ["public/7guis-cljs/css"]}
 
   :cljsbuild {:builds {:app
                        {:source-paths ["src" "env/dev/cljs"]
                         :compiler
                         {:main "seven-gooeys.dev"
-                         :output-to "public/js/app.js"
-                         :output-dir "public/js/out"
+                         :output-to "public/7guis-cljs/js/app.js"
+                         :output-dir "public/7guis-cljs/js/out"
                          :asset-path   "js/out"
                          :source-map true
                          :optimizations :none
                          :pretty-print  true}
                         :figwheel
                         {:on-jsload "seven-gooeys.core/mount-root"
-                         :open-urls ["http://localhost:3449/index.html"]}}
+                         :open-urls ["http://localhost:3449/7guis-cljs/index.html"]}}
                        :release
                        {:source-paths ["src" "env/prod/cljs"]
                         :compiler
-                        {:output-to "public/js/app.js"
+                        {:output-to "public/7guis-cljs/js/app.js"
                          :output-dir "target/release"
                          :optimizations :simple
                          :infer-externs true
