@@ -9,7 +9,7 @@ pom.xml.asc
 /.lein-*
 /.nrepl-port
 /resources/public/7guis-cljs/js
-/public/js
+/public/7guis-cljs/js
 /out
 /.repl
 *.log
