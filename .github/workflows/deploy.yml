@@ -30,13 +30,10 @@ jobs:
         lein clean
         lein package
     
-    - name: Create CNAME file
-      run: echo "live.njerig.me" > ./public/CNAME 
-    
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: ./public
+        path: ./public/7guis-cljs
     
   deploy:
     needs: build
