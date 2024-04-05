@@ -55,5 +55,6 @@ jobs:
         personal_token: ${{ secrets.PERSONAL_TOKEN }}
         external_repository: njerig/live-projects
         publish_branch: main
-        publish_dir: public
+        publish_dir: github-pages
         destination_dir: 7guis-cljs
+        keep_files: true
