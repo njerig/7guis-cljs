@@ -30,11 +30,6 @@ jobs:
         lein clean
         lein package
     
-    - name: Upload Pages artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: ./public
-    
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -55,6 +50,6 @@ jobs:
         personal_token: ${{ secrets.PERSONAL_TOKEN }}
         external_repository: njerig/live-projects
         publish_branch: main
-        publish_dir: github-pages
+        publish_dir: ./public
         destination_dir: 7guis-cljs
         keep_files: true
