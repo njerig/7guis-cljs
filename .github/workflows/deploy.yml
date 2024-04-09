@@ -33,6 +33,7 @@ jobs:
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
+        name: public
         path: ./public
     
   deploy:
@@ -51,6 +52,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
+          name: public
           path: ./public
 
       - name: Deploy to GitHub Pages
