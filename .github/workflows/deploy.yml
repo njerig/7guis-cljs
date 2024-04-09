@@ -59,11 +59,11 @@ jobs:
         path: ./public
 
     - name: Deploy to GitHub Pages
-        id: deployment
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          personal_token: ${{ secrets.PERSONAL_TOKEN }}
-          external_repository: njerig/live-projects
-          publish_branch: gh-pages
-          publish_dir: ./public
-          destination_dir: ./7guis-cljs
+      id: deployment
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        personal_token: ${{ secrets.PERSONAL_TOKEN }}
+        external_repository: njerig/live-projects
+        publish_branch: gh-pages
+        publish_dir: ./public
+        destination_dir: ./7guis-cljs
