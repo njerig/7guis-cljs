@@ -51,6 +51,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: public
+          path: ./public
 
 
       - name: Deploy to GitHub Pages
