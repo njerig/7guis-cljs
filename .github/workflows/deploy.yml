@@ -49,11 +49,7 @@ jobs:
     
     steps:
      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: public
-          path: ./public
-
+       uses: actions/download-artifact@v3
 
       - name: Deploy to GitHub Pages
         id: deployment
