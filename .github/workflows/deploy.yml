@@ -49,7 +49,7 @@ jobs:
       with:
         personal_token: ${{ secrets.PERSONAL_TOKEN }}
         external_repository: njerig/live-projects
-        publish_branch: main
+        publish_branch: gh-pages
         publish_dir: ./public
         destination_dir: 7guis-cljs
         keep_files: true
