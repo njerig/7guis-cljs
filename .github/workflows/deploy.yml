@@ -52,4 +52,3 @@ jobs:
         publish_branch: gh-pages
         publish_dir: ./public
         destination_dir: 7guis-cljs
-        keep_files: true
