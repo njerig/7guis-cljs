@@ -30,6 +30,9 @@ jobs:
         lein clean
         lein package
     
+    - name: List contents of the extracted directory
+      run: ls -la ./public
+    
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
@@ -45,9 +48,7 @@ jobs:
       id-token: write
     
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Download artifact
+     - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: public
