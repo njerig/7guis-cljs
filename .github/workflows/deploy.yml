@@ -36,7 +36,7 @@ jobs:
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        name: public
+        name: deploy-this
         path: ./public
     
   deploy:
@@ -50,12 +50,15 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-      
-    steps:
-     - name: Download artifact
-       uses: actions/download-artifact@v3
 
-      - name: Deploy to GitHub Pages
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: deploy-this
+        path: ./public
+
+    - name: Deploy to GitHub Pages
         id: deployment
         uses: peaceiris/actions-gh-pages@v3
         with:
