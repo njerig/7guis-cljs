@@ -30,9 +30,6 @@ jobs:
         lein clean
         lein package
     
-    - name: List contents of the extracted directory
-      run: tree ./public
-    
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
