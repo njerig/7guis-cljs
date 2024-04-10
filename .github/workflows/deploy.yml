@@ -30,25 +30,17 @@ jobs:
         lein clean
         lein package
     
-    - name: List tree of the extracted directory
-      run: tree ./public
+    - name: List contents of the extracted directory
+      run: ls -la ./public
     
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
         name: deploy-this
         path: ./public
-  
-  get-artifacts:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - id: result 
-      uses: MichaelMelena/list-artifacts@v1
-    - run: echo '${{ steps.result.outputs.artifacts }}'
     
   deploy:
-    needs: get-artifacts
+    needs: build
     runs-on: ubuntu-latest
 
     permissions:
