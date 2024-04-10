@@ -46,7 +46,7 @@ jobs:
 
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://live.njerig.me/7guis-cljs
 
     steps:
     - name: Download artifact
