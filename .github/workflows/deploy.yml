@@ -33,8 +33,8 @@ jobs:
     - name: List contents of the extracted directory
       run: ls -la ./public
     
-    - name: Upload Pages artifact
-      uses: actions/upload-pages-artifact@v3
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
       with:
         name: deploy-this
         path: ./public
