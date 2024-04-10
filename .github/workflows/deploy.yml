@@ -31,7 +31,7 @@ jobs:
         lein package
     
     - name: List contents of the extracted directory
-      run: ls -la ./public
+      run: tree ./public
     
     - name: Upload artifact
       uses: actions/upload-artifact@v3
